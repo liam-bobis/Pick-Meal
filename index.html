@@ -5,11 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>pickmeal</title>
 
-  <!-- Link CSS -->
   <link rel="stylesheet" href="style.css">
-
-  <!-- Google Font -->
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5799856197009282"
+     crossorigin="anonymous"></script>
 </head>
 <body>
 
@@ -17,48 +16,84 @@
     <div class="header">
       <img src="Pickmeal-transparent-logo.png" alt="Logo" class="logo-top">
     </div>
-      <p>Let us decide your next meal</p>
 
-    <label><strong>Your Budget</strong></label>
-    <div class="budget-inputs">
-      <input type="number" id="minBudget" placeholder="Min ₱" min="0">
-      <input type="number" id="maxBudget" placeholder="Max ₱" min="0">
+    <p>Let us decide your next meal</p>
+
+    <div class="instructions">
+      Adding more filters can improve your results. Leave filters on “Any” if you want wider suggestions.
+    </div>
+
+    <label><strong>Your Price Type</strong></label>
+    <div class="price-inputs">
+      <select id="minPriceType">
+        <option value="">Any minimum</option>
+        <option value="1">₱</option>
+        <option value="2">₱₱</option>
+        <option value="3">₱₱₱</option>
+        <option value="4">₱₱₱₱</option>
+      </select>
+
+      <select id="maxPriceType">
+        <option value="">Any maximum</option>
+        <option value="1">₱</option>
+        <option value="2">₱₱</option>
+        <option value="3">₱₱₱</option>
+        <option value="4">₱₱₱₱</option>
+      </select>
     </div>
 
     <label><strong>Your Mood</strong></label>
     <select id="mood">
+      <option value="any">Any</option>
       <option value="comfort">Comfort Food</option>
       <option value="date">Date Food</option>
       <option value="quick">Quick Meal</option>
     </select>
 
+    <label><strong>Your Course</strong></label>
+    <select id="course">
+      <option value="any">Any</option>
+      <option value="appetizer">Appetizer</option>
+      <option value="entree">Entree</option>
+      <option value="dessert">Dessert</option>
+    </select>
+
     <button onclick="pickFood()">Pick My Food</button>
 
     <div id="result" class="loading">Loading food database...</div>
-    <img id="foodImg" />
+    <img id="foodImg" alt="Food image">
 
     <div class="toggle" onclick="toggleDarkMode()">Toggle Dark Mode 🌙</div>
-    <div class="ads">Ad Space</div>
+    <ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-XXXXXXXX"
+     data-ad-slot="1234567890"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+
+    <script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>
   </div>
 
   <script>
     let foods = [];
 
-    // Google Sheets URL (replace YOUR_SHEET_ID)
     const SHEET_URL = "https://opensheet.elk.sh/1lvF1lf-2fY3mYvL_CYnA-vLy9VT5CV8lBnQI80XFL2o/Sheet1";
 
-    // Fetch data from Google Sheets
     fetch(SHEET_URL)
       .then(res => res.json())
       .then(data => {
-        console.log("Loaded data:", data); // Debug
+        console.log("Loaded data:", data);
+
         foods = data.map(item => ({
           name: item.Name,
-          minBudget: Number(item.minBudget),
-          maxBudget: Number(item.maxBudget),
+          priceType: item.PriceType,   // keep as text because it can be "1,2"
           mood: item.Mood,
+          course: item.Course,
           image: item.Image
         }));
+
         document.getElementById("result").innerText = "Click the button to decide!";
       })
       .catch(err => {
@@ -67,22 +102,56 @@
       });
 
     function pickFood() {
-      if (foods.length === 0) return;
+      if (foods.length === 0) {
+        document.getElementById("result").innerText = "Still loading food database...";
+        return;
+      }
 
-      const minBudgetInput = Number(document.getElementById("minBudget").value) || 0;
-      const maxBudgetInput = Number(document.getElementById("maxBudget").value) || Infinity;
+      const minPriceTypeValue = document.getElementById("minPriceType").value;
+      const maxPriceTypeValue = document.getElementById("maxPriceType").value;
       const mood = document.getElementById("mood").value;
+      const course = document.getElementById("course").value;
 
-      const filtered = foods.filter(food =>
-        // Overlapping budget logic
-        food.minBudget <= maxBudgetInput &&
-        food.maxBudget >= minBudgetInput &&
-        // Check multiple moods
-        (food.mood || "").split(",").map(m => m.trim()).includes(mood)
-      );
+      const minPriceType = minPriceTypeValue === "" ? null : Number(minPriceTypeValue);
+      const maxPriceType = maxPriceTypeValue === "" ? null : Number(maxPriceTypeValue);
+
+      if (minPriceType !== null && maxPriceType !== null && minPriceType > maxPriceType) {
+        document.getElementById("result").innerText = "Minimum price type cannot be higher than maximum.";
+        document.getElementById("foodImg").style.display = "none";
+        return;
+      }
+
+      const filtered = foods.filter(food => {
+        const priceList = (food.priceType || "")
+          .split(",")
+          .map(p => Number(p.trim()))
+          .filter(p => !isNaN(p));
+
+        const moodList = (food.mood || "")
+          .split(",")
+          .map(m => m.trim().toLowerCase());
+
+        const courseList = (food.course || "")
+          .split(",")
+          .map(c => c.trim().toLowerCase());
+
+        const matchesMinPrice =
+          minPriceType === null || priceList.some(p => p >= minPriceType);
+
+        const matchesMaxPrice =
+          maxPriceType === null || priceList.some(p => p <= maxPriceType);
+
+        const matchesMood =
+          mood === "any" || moodList.includes(mood);
+
+        const matchesCourse =
+          course === "any" || courseList.includes(course);
+
+        return matchesMinPrice && matchesMaxPrice && matchesMood && matchesCourse;
+      });
 
       if (filtered.length === 0) {
-        document.getElementById("result").innerText = "No match 😢";
+        document.getElementById("result").innerText = "No match 😢 Try adjusting your filters.";
         document.getElementById("foodImg").style.display = "none";
         return;
       }
@@ -92,19 +161,35 @@
 
       setTimeout(() => {
         const random = filtered[Math.floor(Math.random() * filtered.length)];
-        document.getElementById("result").innerText = "🍜 You should eat: " + random.name;
+
+        document.getElementById("result").innerText =
+          "🍜 You should eat: " + random.name + " • " + getPesoSigns(random.priceType);
 
         if (random.image) {
           const img = document.getElementById("foodImg");
           img.src = random.image;
           img.style.display = "block";
         }
-      }, 1500);
+      }, 1200);
+    }
+
+    function getPesoSigns(priceType) {
+      if (!priceType) return "";
+
+      const prices = (priceType + "")
+        .split(",")
+        .map(p => Number(p.trim()))
+        .filter(p => !isNaN(p));
+
+      if (prices.length === 0) return "";
+
+      return prices.map(p => "₱".repeat(p)).join("–");
     }
 
     function toggleDarkMode() {
       document.body.classList.toggle("dark");
     }
   </script>
+
 </body>
 </html>

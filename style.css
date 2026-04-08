@@ -14,9 +14,9 @@
 
 .logo,
 .logo-top {
-  width: 200px;        /* controls size */
-  height: auto;       /* keeps proportions */
-  max-width: 100%;    /* prevents overflow */
+  width: 200px;
+  height: auto;
+  max-width: 100%;
   object-fit: contain;
 }
 
@@ -56,14 +56,9 @@ body.dark .container {
   background: #1e1e1e;
 }
 
-h1 {
-  font-size: 22px;
-  margin-bottom: 8px;
-}
-
 p {
   color: #666;
-  margin-bottom: 18px;
+  margin-bottom: 14px;
   font-size: 14px;
 }
 
@@ -71,25 +66,39 @@ body.dark p {
   color: #aaa;
 }
 
+.instructions {
+  font-size: 12px;
+  line-height: 1.5;
+  color: #666;
+  background: #fff3eb;
+  border: 1px solid #ffd1b3;
+  padding: 10px 12px;
+  border-radius: 10px;
+  margin-bottom: 16px;
+  text-align: left;
+}
+
+body.dark .instructions {
+  background: #2a221d;
+  color: #d5c1b2;
+  border-color: #5a4334;
+}
+
 label {
   display: block;
   text-align: left;
-  margin-top: 10px;
+  margin-top: 12px;
   font-size: 13px;
 }
 
-.budget-inputs {
+.price-inputs {
   display: flex;
   gap: 10px;
-  justify-content: center; /* center them */
+  justify-content: center;
 }
 
-.budget-inputs input {
-  width: 100px; /* 👈 adjust this (80–120px is good) */
-  padding: 8px;
-  border-radius: 10px;
-  border: 1px solid #ddd;
-  font-size: 14px;
+.price-inputs select {
+  width: 100%;
 }
 
 select {
@@ -99,10 +108,17 @@ select {
   border-radius: 10px;
   border: 1px solid #ddd;
   font-size: 14px;
+  background: white;
+}
+
+body.dark select {
+  background: #2b2b2b;
+  color: white;
+  border-color: #444;
 }
 
 button {
-  margin-top: 12px;
+  margin-top: 16px;
   width: 100%;
   padding: 12px;
   border: none;
@@ -124,27 +140,31 @@ button:hover {
   margin-top: 18px;
   font-size: 16px;
   font-weight: 600;
+  line-height: 1.5;
+}
+
+.loading {
+  color: #888;
 }
 
 #foodImg {
   width: 100%;
-  max-height: 200px;
+  max-height: 220px;
   object-fit: cover;
-  border-radius: 12px;
-  margin-top: 12px;
+  border-radius: 14px;
+  margin-top: 14px;
   display: none;
 }
 
-.loading {
-  font-size: 13px;
-  color: #999;
-}
-
 .toggle {
-  margin-top: 10px;
+  margin-top: 12px;
   font-size: 12px;
   cursor: pointer;
   color: #555;
+}
+
+body.dark .toggle {
+  color: #bbb;
 }
 
 .ads {
@@ -155,31 +175,27 @@ button:hover {
   font-size: 11px;
 }
 
-/* Mobile */
+body.dark .ads {
+  background: #2b2b2b;
+  color: #bbb;
+}
+
 @media (max-width: 480px) {
   .container {
     padding: 18px;
     border-radius: 14px;
   }
 
-  h1 {
-    font-size: 20px;
+  .logo,
+  .logo-top {
+    width: 150px;
+  }
+
+  .price-inputs {
+    flex-direction: column;
   }
 
   #result {
     font-size: 15px;
-  }
-
-  button {
-    padding: 11px;
-    font-size: 13px;
-  }
-}
-
-/* Small height screens */
-@media (max-height: 600px) {
-  body {
-    align-items: flex-start;
-    padding-top: 20px;
   }
 }

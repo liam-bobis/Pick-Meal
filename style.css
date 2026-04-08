@@ -20,6 +20,12 @@
   object-fit: contain;
 }
 
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
 body {
   background: linear-gradient(135deg, #ff914d, #ff6f1a);
   min-height: 100vh;

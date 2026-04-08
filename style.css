@@ -5,6 +5,18 @@
   font-family: 'Poppins', sans-serif;
 }
 
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.logo-top {
+  width: 250px;
+  margin-bottom: 8px;
+}
+
 body {
   background: linear-gradient(135deg, #ff914d, #ff6f1a);
   min-height: 100vh;
@@ -60,11 +72,12 @@ label {
 .budget-inputs {
   display: flex;
   gap: 10px;
+  justify-content: center; /* center them */
 }
 
 .budget-inputs input {
-  flex: 1;
-  padding: 10px;
+  width: 100px; /* 👈 adjust this (80–120px is good) */
+  padding: 8px;
   border-radius: 10px;
   border: 1px solid #ddd;
   font-size: 14px;

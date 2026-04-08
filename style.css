@@ -12,9 +12,12 @@
   gap: 10px;
 }
 
+.logo,
 .logo-top {
-  width: 250px;
-  margin-bottom: 8px;
+  width: 40px;        /* controls size */
+  height: auto;       /* keeps proportions */
+  max-width: 100%;    /* prevents overflow */
+  object-fit: contain;
 }
 
 body {

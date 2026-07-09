@@ -88,7 +88,7 @@
     </select>
 
     <label><strong>Your Meal Time</strong></label>
-    <select id="course">
+    <select id="mealtime">
       <option value="any">Any</option>
       <option value="breakfast">Breakfast</option>
       <option value="lunch">Lunch</option>
@@ -150,7 +150,7 @@
           name: item.Name,
           priceType: item.PriceType,
           mood: item.Mood,
-          course: item.Course,
+          mealtime: item.MealTime,
           cuisine: item.Cuisine,
           image: item.Image
         }));
@@ -173,7 +173,7 @@
       const minPriceTypeValue = document.getElementById("minPriceType").value;
       const maxPriceTypeValue = document.getElementById("maxPriceType").value;
       const mood = document.getElementById("mood").value;
-      const course = document.getElementById("course").value;
+      const mealtime = document.getElementById("mealtime").value;
       const cuisine = document.getElementById("cuisine").value;
 
       const minPriceType = minPriceTypeValue === "" ? null : Number(minPriceTypeValue);
@@ -195,7 +195,7 @@
           .split(",")
           .map(m => m.trim().toLowerCase());
 
-        const courseList = (food.course || "")
+        const mealtimeList = (food.mealtime || "")
           .split(",")
           .map(c => c.trim().toLowerCase());
 
@@ -213,13 +213,13 @@
         const matchesMood =
           mood === "any" || moodList.includes(mood);
 
-        const matchesCourse =
-          course === "any" || courseList.includes(course);
+        const matchesMealTime =
+          mealtime === "any" || mealtimeList.includes(mealtime);
 
         const matchesCuisine =
           cuisine === "any" || cuisineList.includes(cuisine);
 
-        return matchesMinPrice && matchesMaxPrice && matchesMood && matchesCourse && matchesCuisine;
+        return matchesMinPrice && matchesMaxPrice && matchesMood && matchesMealTime && matchesCuisine;
       });
 
       if (filtered.length === 0) {
